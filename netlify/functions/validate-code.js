@@ -3,10 +3,8 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || "{}");
     const code = typeof body.code === "string" ? body.code.trim() : "";
-
     const secret = (process.env.SECRET_WIN_CODE || "").trim();
 
-    // Case-insensitive match
     const ok =
       code.length > 0 &&
       secret.length > 0 &&
@@ -17,11 +15,12 @@ exports.handler = async (event) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ok }),
     };
-  } catch (err) {
+  } catch {
     return {
-      statusCode: 400,
+      statusCode: 200,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ok: false }),
     };
   }
 };
+

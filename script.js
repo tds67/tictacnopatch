@@ -753,41 +753,45 @@
 
   secretCancelBtn?.addEventListener("click", hideSecretMenu);
 
-  async function submitSecretCode() {
-    const raw = (secretCodeInput?.value ?? "").trim();
-    if (!raw) {
-      wiggleSecretInput("Enter a code, you sneaky gremlin.");
-      return;
-    }
+ async function submitSecretCode() {
+  const raw = (secretCodeInput?.value ?? "").trim();
 
-    // Case-insensitive: "" works in any casing.
-    const normalized = raw.toLowerCase();
+  if (!raw) {
+    wiggleSecretInput("Enter a code, you sneaky gremlin.");
+    return;
+  }
 
-    // If WebCrypto isn't available (rare on https/localhost), fall back to a simple compare.
-    // This is only to avoid breaking the UI; Netlify (https) should use the hashed path.
-    let ok = false;
-    try {
-      if (crypto?.subtle) {
-        const h = await sha256Hex(normalized);
-        ok = (h === SECRET_HASH);
-      } else {
-        ok = (normalized === "foreverking");
-      }
-    } catch {
-      ok = (normalized === "foreverking");
-    }
+  try {
+    // optional UI lock if you have a hint element/button
+    if (secretHint) secretHint.textContent = "Checking...";
+    if (secretSubmitBtn) secretSubmitBtn.disabled = true;
+
+    const res = await fetch("/.netlify/functions/validate-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: raw }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    const ok = Boolean(data.ok);
+
+    hideSecretMenu();
 
     if (ok) {
-      hideSecretMenu();
       showWinScreen();
-      return;
+    } else {
+      showWrongPopup();
+      showToast("Wrong code 😈", 900);
     }
-
-    // Wrong code: show the annoying wrong-code popup
-    hideSecretMenu();
-    showWrongPopup();
-    showToast("Wrong code 😈", 900);
+  } catch (err) {
+    // IMPORTANT: no fallback local compare here
+    wiggleSecretInput("Server asleep. Try again.");
+  } finally {
+    if (secretHint) secretHint.textContent = "";
+    if (secretSubmitBtn) secretSubmitBtn.disabled = false;
   }
+}
+
 
   secretSubmitBtn?.addEventListener("click", submitSecretCode);
 
