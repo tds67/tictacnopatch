@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <title>Tic Tac NO (My Game My Rules)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">✖︎◯</div>
+          <div>
+            <h1>Tic Tac <span class="no">NO</span></h1>
+            <p class="subtitle">A totally fair game* (*not even a little)</p>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="statLabel">Difficulty</div>
+            <div class="statValue statValueSmall">
+              <select id="difficulty" class="select">
+                <option value="easy">Easy (definitely not rigged)</option>
+                <option value="hard" selected>Hard (win or tie)</option>
+                <option value="impossible">Impossible (you don’t play)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="statLabel">Cheats triggered</div>
+            <div class="statValue" id="cheatCount">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="statLabel">Next ad wave</div>
+            <div class="statValue"><span id="adTimer">15</span>s</div>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="boardWrap">
+          <div class="statusRow">
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+            <div class="buttons">
+              <button id="resetBtn" class="btn">Reset</button>
+              <button id="newGameBtn" class="btn btnPrimary">New Game</button>
+            </div>
+          </div>
+
+          <div id="board" class="board" aria-label="Tic Tac Toe board" role="grid">
+            <!-- 9 cells injected by JS -->
+          </div>
+
+          <p class="hint">
+            You are <b>X</b>. The AI is <b>O</b>. Pick a difficulty and try your luck.
+          </p>
+        </section>
+      </main>
+
+      <!-- Toast / prank message -->
+      <div id="toast" class="toast" role="status" aria-live="assertive">
+        Hahaha my games my rules
+      </div>
+
+      <!-- Fake Ads Overlay -->
+      <div id="adsOverlay" class="adsOverlay" aria-hidden="true">
+        <div class="adsTopBar">
+          <div class="adsTitle">✨ Totally Real Ads ✨</div>
+          <div class="adsSub">Now every 15 seconds. You’re welcome.</div>
+        </div>
+        <div id="adsGrid" class="adsGrid"></div>
+      </div>
+
+      <!-- Annoying Lose Screen -->
+      <div id="loseOverlay" class="loseOverlay" aria-hidden="true">
+        <div class="loseCard" role="dialog" aria-modal="true" aria-label="You lost">
+          <div class="loseTitle">YOU LOST 💀</div>
+          <div class="loseBody">
+            <p>Skill issue detected.</p>
+            <p class="loseSmall">Don’t worry. The AI trained for this moment since 3 minutes ago.</p>
+          </div>
+
+          <div class="loseBtns">
+            <button id="playAgainBtn" class="btn btnPrimary">Fine. Play again.</button>
+            <button id="annoyingCloseBtn" class="btn btnDanger">Close</button>
+          </div>
+
+          <div class="loseFooter">Tip: Easy mode is “easy”. (lol)</div>
+        </div>
+      </div>
+
+
+      <!-- Secret invisible button (top-left pixel-ish). Clicking it opens the secret code menu. -->
+      <button id="secretBtn" class="secretBtn" type="button" aria-label="Secret"></button>
+
+      <!-- Secret Code Overlay -->
+      <div id="secretOverlay" class="secretOverlay" aria-hidden="true">
+        <div class="secretCard" role="dialog" aria-modal="true" aria-label="Secret code">
+          <div class="secretTitle">🔒 Secret Win Panel</div>
+          <p class="secretBody">Enter the super secret code to win the game.</p>
+
+          <div class="secretRow">
+            <input id="secretCodeInput" class="secretInput" type="text" placeholder="Enter code..." autocomplete="off" spellcheck="false" />
+            <button id="secretSubmitBtn" class="btn btnPrimary" type="button">Submit</button>
+          </div>
+
+          <div class="secretActions">
+            <button id="secretCancelBtn" class="btn" type="button">Cancel</button>
+          </div>
+
+          <div id="secretHint" class="secretHint"></div>
+        </div>
+      </div>
+
+      <!-- Wrong-code popup (only appears when the code is WRONG) -->
+      <div id="wrongOverlay" class="wrongOverlay" aria-hidden="true">
+        <div class="wrongCard" role="dialog" aria-modal="true" aria-label="Wrong code">
+          <div class="wrongTitle">WRONG CODE ❌</div>
+          <p class="wrongBody">Nice try. The code system is also a prank.</p>
+          <button id="wrongExitBtn" class="btn btnDanger" type="button">Exit</button>
+        </div>
+      </div>
+
+      <!-- Secret win screen (appears only if the code is CORRECT) -->
+      <div id="winOverlay" class="winOverlay" aria-hidden="true">
+        <div class="winCard" role="dialog" aria-modal="true" aria-label="You win">
+          <div class="winTitle">YOU WIN 🎉</div>
+          <p class="winBody">Secret code accepted. The AI is absolutely fuming.</p>
+          <div class="winBtns">
+            <button id="winNewGameBtn" class="btn btnPrimary" type="button">New Game</button>
+            <button id="winCloseBtn" class="btn" type="button">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span>Tip: If the AI is being mean, that’s… intended.</span>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
